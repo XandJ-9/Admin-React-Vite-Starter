@@ -1,0 +1,14 @@
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 保留各子项目自己的 .gitignore（frontend/、backend/）负责忽略
+# node_modules / dist / .venv / __pycache__ / .env / db/*.db 等。
