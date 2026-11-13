@@ -148,7 +148,6 @@ function RoleManagementPage() {
     onSuccess: () => {
       message.success(editingRecord ? '角色已更新' : '角色已创建');
       setModalOpen(false);
-      modalForm.resetFields();
       void table.query.refetch();
     },
   });
@@ -187,11 +186,11 @@ function RoleManagementPage() {
   };
 
   const columns: ColumnsType<RoleItem> = [
-    { title: '角色编码', dataIndex: 'code', width: 160 },
-    { title: '角色名称', dataIndex: 'name', width: 160 },
+    { title: '角色编码', dataIndex: 'code', width: 160, sorter: true },
+    { title: '角色名称', dataIndex: 'name', width: 160, sorter: true },
     { title: '描述', dataIndex: 'description', render: (value) => value ?? '-' },
     { title: '状态', dataIndex: 'status', width: 100, render: (status) => <StatusTag status={status} /> },
-    { title: '创建时间', dataIndex: 'createdAt', width: 180 },
+    { title: '创建时间', dataIndex: 'createdAt', width: 180, sorter: true },
     ...(canShowRowActions
       ? [
           {
@@ -312,6 +311,7 @@ function RoleManagementPage() {
         dataSource={table.tableData}
         loading={table.query.isFetching}
         pagination={table.pagination}
+        onChange={table.onTableChange}
         scroll={{ x: 900 }}
         renderMobileItem={renderMobileRole}
         error={table.query.error}
@@ -374,10 +374,8 @@ function RoleManagementPage() {
       <Modal
         title={editingRecord ? '编辑角色' : '新增角色'}
         open={modalOpen}
-        onCancel={() => {
-          setModalOpen(false);
-          modalForm.resetFields();
-        }}
+        onCancel={() => setModalOpen(false)}
+        afterClose={() => modalForm.resetFields()}
         onOk={handleSubmitModal}
         confirmLoading={saveMutation.isPending}
         className="system-form-modal"

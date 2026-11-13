@@ -111,7 +111,6 @@ function UserManagementPage() {
     onSuccess: () => {
       message.success(editingRecord ? '用户已更新' : '用户已创建');
       setModalOpen(false);
-      modalForm.resetFields();
       void table.query.refetch();
     },
   });
@@ -130,8 +129,8 @@ function UserManagementPage() {
   };
 
   const columns: ColumnsType<UserItem> = [
-    { title: '用户名', dataIndex: 'username', width: 140 },
-    { title: '昵称', dataIndex: 'nickname', width: 140 },
+    { title: '用户名', dataIndex: 'username', width: 140, sorter: true },
+    { title: '昵称', dataIndex: 'nickname', width: 140, sorter: true },
     { title: '邮箱', dataIndex: 'email', width: 200 },
     { title: '角色', dataIndex: 'roleNames', render: (value: string[] = []) => value.join('、') || '-' },
     { title: '状态', dataIndex: 'status', width: 100, render: (status) => <StatusTag status={status} /> },
@@ -244,6 +243,7 @@ function UserManagementPage() {
         dataSource={table.tableData}
         loading={table.query.isFetching}
         pagination={table.pagination}
+        onChange={table.onTableChange}
         scroll={{ x: 980 }}
         renderMobileItem={renderMobileUser}
         error={table.query.error}
@@ -252,10 +252,8 @@ function UserManagementPage() {
       <Modal
         title={editingRecord ? '编辑用户' : '新增用户'}
         open={modalOpen}
-        onCancel={() => {
-          setModalOpen(false);
-          modalForm.resetFields();
-        }}
+        onCancel={() => setModalOpen(false)}
+        afterClose={() => modalForm.resetFields()}
         onOk={handleSubmitModal}
         confirmLoading={saveMutation.isPending}
         className="system-form-modal"

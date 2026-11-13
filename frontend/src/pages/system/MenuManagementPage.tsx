@@ -299,7 +299,6 @@ function MenuManagementPage() {
     onSuccess: () => {
       message.success(editingRecord ? '菜单已更新' : '菜单已创建');
       setModalOpen(false);
-      modalForm.resetFields();
       void table.query.refetch();
       void fullMenuQuery.refetch();
     },
@@ -491,10 +490,8 @@ function MenuManagementPage() {
       <Modal
         title={editingRecord ? '编辑菜单' : '新增菜单'}
         open={modalOpen}
-        onCancel={() => {
-          setModalOpen(false);
-          modalForm.resetFields();
-        }}
+        onCancel={() => setModalOpen(false)}
+        afterClose={() => modalForm.resetFields()}
         onOk={handleSubmitModal}
         confirmLoading={saveMutation.isPending}
         className="system-form-modal"

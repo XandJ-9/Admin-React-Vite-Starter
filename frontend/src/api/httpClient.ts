@@ -139,3 +139,30 @@ export async function putJson<T>(url: string, data?: unknown): Promise<T> {
 export async function deleteJson(url: string): Promise<void> {
   await httpClient.delete(url);
 }
+
+/** 上传超时（毫秒）：Excel 等文件解析远超常规接口，全局 15s 会在服务端仍在处理时就报超时。 */
+const UPLOAD_TIMEOUT = 5 * 60 * 1000;
+
+/** 上传文件（multipart/form-data），返回解析后的 JSON 响应。 */
+export async function uploadFile<T>(url: string, file: File): Promise<T> {
+  const form = new FormData();
+  form.append('file', file);
+  const response = await httpClient.post<T>(url, form, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: UPLOAD_TIMEOUT,
+  });
+  return response.data;
+}
+
+/** 下载二进制流（xlsx 导出 / 模板下载）并触发浏览器保存。 */
+export async function downloadBlob(url: string, filename: string, params?: object): Promise<void> {
+  const response = await httpClient.get(url, { responseType: 'blob', params });
+  const blob = new Blob([response.data]);
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+}

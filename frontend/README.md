@@ -52,6 +52,7 @@ VITE_API_PROXY_TARGET=http://127.0.0.1:8000
 - `VITE_API_BASE_URL`：API 基址，留空=同域 `/api`；填地址=直连后端；填子路径=子路径前缀。
 - `VITE_API_PROXY_TARGET`：仅 dev server 代理用，指向本地 FastAPI。
 - `VITE_BASE_PATH`：部署子路径（如 `/admin/`），留空=根路径。
+- `VITE_STORAGE_PREFIX`：localStorage 键名前缀（默认 `admin-react-vite-starter`）。同域下部署多个应用时须配不同值，避免 token / settings 互相覆盖；键名还会自动叠加部署子路径命名空间，子路径不同的应用即使忘了配前缀也能隔离。
 
 ## 核心架构
 
